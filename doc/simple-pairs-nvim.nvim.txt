@@ -1,4 +1,4 @@
-*simple-pairs-nvim.nvim.txt*   For NVIM v0.8.0   Last change: 2025 November 13
+*simple-pairs-nvim.nvim.txt*   For NVIM v0.8.0   Last change: 2025 November 14
 
 ==============================================================================
 Table of Contents                   *simple-pairs-nvim.nvim-table-of-contents*
