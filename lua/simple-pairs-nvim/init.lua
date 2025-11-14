@@ -66,13 +66,13 @@ function M.handle_open(open)
 end
 
 function M.handle_open_close(char)
+  if get_char_after_cursor() == char then
+    return '<Right>'
+  end
+
   -- Skip inside string or if next char same as close
   if in_ignored_node() then
     return char
-  end
-
-  if get_char_after_cursor() == char then
-    return '<Right>'
   end
 
   return char .. char .. '<Left>'
