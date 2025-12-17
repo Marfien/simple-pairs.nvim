@@ -2,12 +2,15 @@ local M = {}
 
 -- Default configuration
 M.config = {
-  ignored = {
-    ts_nodes = {
-      'string',
-      'comment',
+  default = {
+    closing = nil,
+    ignored = {
+      ts_nodes = {
+        'string',
+        'comment',
+      },
+      filetypes = {},
     },
-    filetypes = {},
   },
   pairs = {
     ['('] = ')',
