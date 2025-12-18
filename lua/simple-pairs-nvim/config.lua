@@ -49,17 +49,17 @@ M.config = {
 function M.normalize_override(opts)
   opts = vim.tbl_deep_extend('keep', opts, M.default_config)
 
-  for index, value in ipairs(opts) do
+  for key, value in pairs(opts.pairs) do
     -- streamline config
     if type(value) == 'string' then
       local pair_opts = vim.deepcopy(opts.default, true)
       pair_opts.closing = value
-      M.config.pairs[index] = pair_opts
+      M.config.pairs[key] = pair_opts
     -- if closing is nil it should default to symetric pairs
     elseif type(value) == 'table' then
       local pair_opts = vim.tbl_deep_extend('keep', value, opts.default)
-      pair_opts.closing = pair_opts.closing or index
-      M.config.pairs[index] = pair_opts
+      pair_opts.closing = pair_opts.closing or key
+      M.config.pairs[key] = pair_opts
     end
   end
 end

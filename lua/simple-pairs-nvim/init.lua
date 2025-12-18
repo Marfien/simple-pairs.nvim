@@ -4,6 +4,7 @@ local config = require('simple-pairs-nvim.config')
 local helpers = require('simple-pairs-nvim.helpers')
 
 -- Allow user configuration
+---@param opts simple-pairs-nvim.Options
 function M.setup(opts)
   config.normalize_override(opts)
   M._setup_mappings()
@@ -22,18 +23,21 @@ local function is_in_ignored_node(ignored)
   return false
 end
 
----@param pair_opts simple-pairs-nvim.MappingConfig
-local function should_ignore(pair_opts)
-  local ignore_opts = pair_opts.ignored
-  return is_in_ignored_node(ignore_opts.ts_nodes)
-    or vim.list_contains(ignore_opts.filetypes, vim.bo.filetype)
+---@param ignore_opts simple-pairs-nvim.MappingIgnoreConfig
+local function is_ignored_filetype(ignore_opts)
+  return vim.list_contains(ignore_opts.filetypes, vim.bo.filetype)
+end
+
+---@param ignore_opts simple-pairs-nvim.MappingIgnoreConfig
+local function should_ignore(ignore_opts)
+  return is_in_ignored_node(ignore_opts.ts_nodes) or is_ignored_filetype(ignore_opts)
 end
 
 -- Insert or skip pairs
 ---@param char string open char
 ---@param pair_opts simple-pairs-nvim.MappingConfig
 function M.handle_open(char, pair_opts)
-  if should_ignore(pair_opts) or helpers.get_char_after_cursor() == char then
+  if should_ignore(pair_opts.ignored) or helpers.get_char_after_cursor() == char then
     return char
   end
 
@@ -48,7 +52,7 @@ function M.handle_open_close(char, pair_opts)
   end
 
   -- Skip inside string or if next char same as close
-  if should_ignore(pair_opts) or helpers.get_char_before_cursor() == char then
+  if should_ignore(pair_opts.ignored) or helpers.get_char_before_cursor() == char then
     return char
   end
 
@@ -66,10 +70,11 @@ function M.handle_backspace()
   local before = helpers.get_char_before_cursor()
   local pair_opts = config.config.pairs[before]
 
-  if should_ignore(pair_opts) then
+  if not pair_opts or is_ignored_filetype(pair_opts.ignored) then
     return '<BS>'
   end
 
+  vim.notify(pair_opts.closing)
   local after = helpers.get_char_after_cursor()
   return pair_opts.closing == after and '<Right><BS><BS>' or '<BS>'
 end
@@ -79,7 +84,7 @@ function M.handle_cr()
   local before = helpers.get_char_before_cursor()
   local pair_opts = config.config.pairs[before]
 
-  if should_ignore(pair_opts) then
+  if not pair_opts or is_ignored_filetype(pair_opts.ignored) then
     return '<CR>'
   end
 
