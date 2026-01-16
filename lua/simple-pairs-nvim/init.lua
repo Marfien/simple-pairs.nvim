@@ -28,9 +28,15 @@ local function is_ignored_filetype(ignore_opts)
   return vim.list_contains(ignore_opts.filetypes, vim.bo.filetype)
 end
 
+local function is_next_alphanum()
+  return helpers.get_char_after_cursor():match('[0-9a-zA-Z]') ~= nil
+end
+
 ---@param ignore_opts simple-pairs-nvim.MappingIgnoreConfig
 local function should_ignore(ignore_opts)
-  return is_in_ignored_node(ignore_opts.ts_nodes) or is_ignored_filetype(ignore_opts)
+  return is_in_ignored_node(ignore_opts.ts_nodes)
+    or is_ignored_filetype(ignore_opts)
+    or (ignore_opts.before_alphanumeric and is_next_alphanum())
 end
 
 -- Insert or skip pairs

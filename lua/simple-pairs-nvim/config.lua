@@ -3,6 +3,7 @@ local M = {}
 ---@class simple-pairs-nvim.MappingIgnoreConfig
 ---@field ts_nodes string[]
 ---@field filetypes string[]
+---@field before_alphanumeric boolean
 
 ---@class simple-pairs-nvim.MappingConfig
 ---@field closing string|nil
@@ -26,6 +27,7 @@ M.default_config = {
         'comment',
       },
       filetypes = {},
+      before_alphanumeric = true,
     },
   },
   pairs = {
