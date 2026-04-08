@@ -80,7 +80,6 @@ function M.handle_backspace()
     return '<BS>'
   end
 
-  vim.notify(pair_opts.closing)
   local after = helpers.get_char_after_cursor()
   return pair_opts.closing == after and '<Right><BS><BS>' or '<BS>'
 end
